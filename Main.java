@@ -10,6 +10,8 @@ public class Main {
     static String[] months = {"January","February","March","April","May","June",
             "July","August","September","October","November","December"};
 
+    static int[][][] data = new int[MONTHS][DAYS][COMMS];
+
 
     // ======== REQUIRED METHOD LOAD DATA (Students fill this) ========
     public static void loadData() {
@@ -18,11 +20,38 @@ public class Main {
     // ======== 10 REQUIRED METHODS (Students fill these) ========
 
     public static String mostProfitableCommodityInMonth(int month) {
-        return "DUMMY";
+        if (month < 0 || month >= MONTHS) {
+            return "INVALID_MONTH";
+        }
+
+        int[] totals = new int[COMMS];
+        // total profit for every comm per month
+        for (int d = 0; d < DAYS; d++) {
+            for (int c = 0; c < COMMS; c++) {
+                totals[c] += data[month][d][c];
+            }
+        }
+        // highest profit
+        int maxIndex = 0;
+        for (int c = 1; c < COMMS; c++) {
+            if (totals[c] > totals[maxIndex]) {
+                maxIndex = c;
+            }
+        }
+        return commodities[maxIndex] + " " + totals[maxIndex];
     }
 
     public static int totalProfitOnDay(int month, int day) {
-        return 1234;
+        if (month < 0 || month >= MONTHS || day < 1 || day > DAYS) {
+            return -99999;
+        }
+
+        int total = 0;
+        for (int c = 0; c < COMMS; c++) {
+            total += data[month][day - 1][c];
+        }
+
+        return total;
     }
 
     public static int commodityProfitInRange(String commodity, int from, int to) {
