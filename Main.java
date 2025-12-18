@@ -15,6 +15,47 @@ public class Main {
 
     // ======== REQUIRED METHOD LOAD DATA (Students fill this) ========
     public static void loadData() {
+            for (int monthIndex = 0; monthIndex < MONTHS; monthIndex++) {
+                String filename = "Data_Files/" + months[monthIndex] + ".txt";
+
+                try {
+                    File file = new File(filename);
+                    Scanner reader = new Scanner(file);
+
+                    while (reader.hasNextLine()) {
+                        String line = reader.nextLine();
+                        line = line.trim();
+
+                        if (line.isEmpty()) continue;
+
+                        String[] parts = line.split(",");
+
+                        if (parts.length != 3) continue;
+
+                        try {
+                            int dayIndex = Integer.parseInt(parts[0].trim()) - 1;
+
+                            String commodityName = parts[1].trim();
+
+                            int profit = Integer.parseInt(parts[2].trim());
+
+                            int commIndex = -1;
+                            for (int i = 0; i < COMMS; i++) {
+                                if (commodities[i].equals(commodityName)) {
+                                    commIndex = i;
+                                    break;
+                                }
+                            }
+                            if (commIndex != -1 && dayIndex >= 0 && dayIndex < DAYS) {
+                                data[monthIndex][dayIndex][commIndex] = profit;
+                            }
+                        } catch (NumberFormatException e) {
+                        }
+                    }
+                    reader.close();
+                } catch (IOException e) {
+                }
+        }
     }
 
     // ======== 10 REQUIRED METHODS (Students fill these) ========
@@ -55,7 +96,25 @@ public class Main {
     }
 
     public static int commodityProfitInRange(String commodity, int from, int to) {
-        return 1234;
+        int commIndex = -1;
+        for (int i = 0; i < COMMS; i++) {
+            if (commodities[i].equals(commodity)) {
+                commIndex = i;
+                break;
+            }
+        }
+        if (commIndex == -1 || from < 1 || from > DAYS || to < 1 || to > DAYS || from > to) {
+            return -99999;
+        }
+
+        int total = 0;
+
+        for (int m = 0; m < MONTHS; m++) {
+            for (int d = from - 1; d < to; d++) {
+                total += data[m][d][commIndex];
+            }
+        }
+        return total;
     }
 
     public static int bestDayOfMonth(int month) {
