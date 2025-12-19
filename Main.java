@@ -15,28 +15,21 @@ public class Main {
 
     // ======== REQUIRED METHOD LOAD DATA (Students fill this) ========
     public static void loadData() {
-            for (int monthIndex = 0; monthIndex < MONTHS; monthIndex++) {
-                String filename = "Data_Files/" + months[monthIndex] + ".txt";
+        for (int monthIndex = 0; monthIndex < MONTHS; monthIndex++) {
+            String filename = "Data_Files/" + months[monthIndex] + ".txt";
 
-                try {
-                    File file = new File(filename);
-                    Scanner reader = new Scanner(file);
+            try {
+                Scanner reader = new Scanner(new File(filename));
 
-                    while (reader.hasNextLine()) {
-                        String line = reader.nextLine();
-                        line = line.trim();
+                while (reader.hasNextLine()) {
+                    String line = reader.nextLine();
+                    if (line.trim().isEmpty()) continue;
 
-                        if (line.isEmpty()) continue;
-
-                        String[] parts = line.split(",");
-
-                        if (parts.length != 3) continue;
-
+                    String[] parts = line.split(",");
+                    if (parts.length == 3) {
                         try {
                             int dayIndex = Integer.parseInt(parts[0].trim()) - 1;
-
                             String commodityName = parts[1].trim();
-
                             int profit = Integer.parseInt(parts[2].trim());
 
                             int commIndex = -1;
@@ -46,15 +39,17 @@ public class Main {
                                     break;
                                 }
                             }
+
                             if (commIndex != -1 && dayIndex >= 0 && dayIndex < DAYS) {
                                 data[monthIndex][dayIndex][commIndex] = profit;
                             }
                         } catch (NumberFormatException e) {
                         }
                     }
-                    reader.close();
-                } catch (IOException e) {
                 }
+                reader.close();
+            } catch (FileNotFoundException e) {
+            }
         }
     }
 
@@ -66,13 +61,13 @@ public class Main {
         }
 
         int[] totals = new int[COMMS];
-        // total profit for every comm per month
+
         for (int d = 0; d < DAYS; d++) {
             for (int c = 0; c < COMMS; c++) {
                 totals[c] += data[month][d][c];
             }
         }
-        // highest profit
+
         int maxIndex = 0;
         for (int c = 1; c < COMMS; c++) {
             if (totals[c] > totals[maxIndex]) {
@@ -122,7 +117,38 @@ public class Main {
     }
 
     public static String bestMonthForCommodity(String comm) {
-        return "DUMMY";
+        int commIndex = -1;
+        for (int i = 0; i < COMMS; i++) {
+            if (commodities[i].equals(comm)) {
+                commIndex = i;
+                break;
+            }
+        }
+
+        if (commIndex == -1) {
+            return "INVALID_COMMODITY";
+        }
+
+        int maxMonthIndex = 0;
+        int maxProfit = 0;
+
+        for (int d = 0; d < DAYS; d++) {
+            maxProfit += data[0][d][commIndex];
+        }
+
+        for (int m = 1; m < MONTHS; m++) {
+            int currentMonthTotal = 0;
+            for (int d = 0; d < DAYS; d++) {
+                currentMonthTotal += data[m][d][commIndex];
+            }
+
+            if (currentMonthTotal > maxProfit) {
+                maxProfit = currentMonthTotal;
+                maxMonthIndex = m;
+            }
+        }
+
+        return months[maxMonthIndex];
     }
 
     public static int consecutiveLossDays(String comm) {
