@@ -202,7 +202,26 @@ public class Main {
     }
 
     public static int daysAboveThreshold(String comm, int threshold) {
-        return 1234;
+        int commIndex = -1;
+        for( int i = 0; i < COMMS; i++) {
+            if (commodities[i].equals(comm)) {
+                commIndex = i;
+                break;
+            }
+        }
+        if(commIndex == -1){
+            return -1;
+        }
+
+        int count = 0;
+        for( int m = 0 ; m < MONTHS ; m++) {
+            for (int d = 0; d < DAYS; d++) {
+                if (data[m][d][commIndex] > threshold) {
+                    count++;
+                }
+            }
+        }
+        return count;
     }
 
     public static int biggestDailySwing(int month) {
