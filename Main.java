@@ -16,7 +16,7 @@ public class Main {
     // ======== REQUIRED METHOD LOAD DATA (Students fill this) ========
     public static void loadData() {
         for (int monthIndex = 0; monthIndex < MONTHS; monthIndex++) {
-            String filename = "Data_Files/" + months[monthIndex] + ".txt";
+            String filename = "src/Data_Files/" + months[monthIndex] + ".txt";
 
             try {
                 Scanner reader = new Scanner(new File(filename));
@@ -225,11 +225,68 @@ public class Main {
     }
 
     public static int biggestDailySwing(int month) {
-        return 1234;
+        if (month < 0 || month >= MONTHS) {
+            return -99999;
+        }
+        int maxSwing = 0;
+
+        for (int d = 0; d < DAYS - 1; d++) {
+            int day1Total = 0;
+            int day2Total = 0;
+
+            for (int c = 0; c < COMMS; c++) {
+                day1Total += data[month][d][c];
+                day2Total += data[month][d + 1][c];
+            }
+
+            int currentSwing = day2Total - day1Total;
+            if (currentSwing < 0) {
+                currentSwing = -currentSwing;
+            }
+            if (currentSwing > maxSwing) {
+                maxSwing = currentSwing;
+            }
+        }
+        return maxSwing;
     }
 
     public static String compareTwoCommodities(String c1, String c2) {
-        return "DUMMY is better by 1234";
+        int c1Index = -1;
+        int c2Index = -1;
+
+        for (int i = 0; i < COMMS; i++) {
+            if (commodities[i].equals(c1)) c1Index = i;
+            if (commodities[i].equals(c2)) c2Index = i;
+        }
+
+        if (c1Index == -1 || c2Index == -1) {
+            return "INVALID_COMMODITY";
+        }
+
+        int c1Total = 0;
+        int c2Total = 0;
+
+        for (int m = 0; m < MONTHS; m++) {
+            for (int d = 0; d < DAYS; d++) {
+                c1Total += data[m][d][c1Index];
+                c2Total += data[m][d][c2Index];
+            }
+        }
+
+        int diff;
+        if (c1Total > c2Total) {
+            diff = c1Total - c2Total;
+        } else {
+            diff = c2Total - c1Total;
+        }
+
+        if (c1Total > c2Total) {
+            return c1 + " is better by " + diff;
+        } else if (c2Total > c1Total) {
+            return c2 + " is better by " + diff;
+        } else {
+            return "Equal";
+        }
     }
 
     public static String bestWeekOfMonth(int month) {
