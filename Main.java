@@ -113,7 +113,28 @@ public class Main {
     }
 
     public static int bestDayOfMonth(int month) {
-        return 1234;
+        if (month < 0 || month >= MONTHS) {
+            return -1;
+        }
+        int maxDay = 1 ;
+        int maxProfit = 0;
+
+        for (int c = 0; c < COMMS; c++) {
+            maxProfit += data[month][0][c];
+        }
+
+        for (int d = 1; d < DAYS; d++) {
+            int dayTotal = 0;
+            for (int c = 0; c < COMMS; c++) {
+                dayTotal += data[month][d][c];
+            }
+
+            if (dayTotal > maxProfit) {
+                maxProfit = dayTotal;
+                maxDay = d + 1;
+            }
+        }
+        return maxDay;
     }
 
     public static String bestMonthForCommodity(String comm) {
@@ -152,7 +173,32 @@ public class Main {
     }
 
     public static int consecutiveLossDays(String comm) {
-        return 1234;
+        int commIndex = -1;
+        for (int i = 0; i < COMMS; i++) {
+            if (commodities[i].equals(comm)) {
+                commIndex = i;
+                break;
+            }
+        }
+        if (commIndex == -1) {
+            return -1;
+        }
+        int maxStreak = 0;
+        int currStreak = 0;
+
+        for (int m = 0; m < MONTHS; m++) {
+            for (int d = 0; d < DAYS; d++) {
+                if (data[m][d][commIndex] < 0) {
+                    currStreak++;
+                    if (currStreak > maxStreak) {
+                        maxStreak = currStreak;
+                    }
+                } else {
+                    currStreak = 0;
+                }
+            }
+        }
+        return maxStreak;
     }
 
     public static int daysAboveThreshold(String comm, int threshold) {
