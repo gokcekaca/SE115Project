@@ -12,11 +12,10 @@ public class Main {
 
     static int[][][] data = new int[MONTHS][DAYS][COMMS];
 
-
     // ======== REQUIRED METHOD LOAD DATA (Students fill this) ========
     public static void loadData() {
         for (int monthIndex = 0; monthIndex < MONTHS; monthIndex++) {
-            String filename = "src/Data_Files/" + months[monthIndex] + ".txt";
+            String filename = "Data_Files/" + months[monthIndex] + ".txt";
 
             try {
                 Scanner reader = new Scanner(new File(filename));
@@ -86,7 +85,6 @@ public class Main {
         for (int c = 0; c < COMMS; c++) {
             total += data[month][day - 1][c];
         }
-
         return total;
     }
 
@@ -228,9 +226,10 @@ public class Main {
         if (month < 0 || month >= MONTHS) {
             return -99999;
         }
+
         int maxSwing = 0;
 
-        for (int d = 0; d < DAYS - 1; d++) {
+        for (int d = 0 ; d < DAYS - 1 ; d++) {
             int day1Total = 0;
             int day2Total = 0;
 
@@ -239,14 +238,12 @@ public class Main {
                 day2Total += data[month][d + 1][c];
             }
 
-            int currentSwing = day2Total - day1Total;
-            if (currentSwing < 0) {
-                currentSwing = -currentSwing;
-            }
-            if (currentSwing > maxSwing) {
-                maxSwing = currentSwing;
+            int swing = Math.abs(day2Total - day1Total);
+            if (swing > maxSwing) {
+                maxSwing = swing;
             }
         }
+
         return maxSwing;
     }
 
@@ -273,12 +270,7 @@ public class Main {
             }
         }
 
-        int diff;
-        if (c1Total > c2Total) {
-            diff = c1Total - c2Total;
-        } else {
-            diff = c2Total - c1Total;
-        }
+        int diff = Math.abs(c1Total - c2Total);
 
         if (c1Total > c2Total) {
             return c1 + " is better by " + diff;
@@ -318,6 +310,6 @@ public class Main {
 
     public static void main(String[] args) {
         loadData();
-        System.out.println("Data loaded – ready for queries");
+        System.out.println("--- DATA LOADED SUCCESSFULLY ---\n");
     }
 }
